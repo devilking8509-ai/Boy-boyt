@@ -2,15 +2,22 @@ import asyncio
 from xC4 import Emote_k
 import random
 
-# --- SETTINGS ---
-MY_BOSS_UID = "9316257817"  # <--- APNI UID YAHAN DALO
-DELAY = 4.15  # Speed (Jitna kam, utna tez)
+# --- SETTINGS (Yahan Apni 5 UIDs Dalo) ---
+VIP_ADMINS = [
+    "11553486931",  # Admin 1 (Main Boss)
+    "2572691913",  # Admin 2
+    "2522821351",  # Admin 3
+    "9316257817",  # Admin 4
+    "13947421096"   # Admin 5
+]
+
+DELAY = 4.15  # Speed (Jitna kam number, utna tez spam)
 
 # --- STATE VARIABLES ---
 is_running = False
 current_task = None
 
-# --- LOCAL HELPER FUNCTION (Packet bhejne ke liye) ---
+# --- LOCAL HELPER FUNCTION ---
 async def SEndPacKeT(whisper_writer, online_writer, TypE, PacKeT):
     try:
         if TypE == 'OnLine' and online_writer:
@@ -33,52 +40,39 @@ EVO_IDS = [
     909045001, 909042008, 909049012, 909042007, 909040010
 ]
 
-# --- 2. THE MASTER LIST (ALL EMOTES FROM YOUR PHOTOS) ---
+# --- 2. THE MASTER LIST (ALL EMOTES) ---
 ALL_IDS = [
-    # --- Batch 1: New & Rare ---
     909046007, 909046008, 909046009, 909046010, 909046011, 909046012, 
     909046013, 909046014, 909046015, 909046016, 909046017, 909047001, 
     909047002, 909047003, 909047004, 909047005, 909047006, 909047007, 
     909047008, 909047009, 909047012, 909042005, 909042006, 909042009, 
     909042011, 909042012, 909042013, 909042016, 909042017, 909042018, 
     909043001, 909043002, 909043003, 909043004, 909043005, 909043006,
-    
-    # --- Batch 2: Viral & Funny ---
     909043007, 909043008, 909043009, 909043010, 909043013, 909044001, 
     909044002, 909044003, 909044004, 909044005, 909044006, 909044007, 
     909044015, 909044016, 909045002, 909045003, 909045004, 909045005, 
     909045010, 909045011, 909045012, 909045015, 909045016, 909045017, 
     909046001, 909046002, 909046003, 909046004, 909046005, 909046006,
-
-    # --- Batch 3: Actions & Dances ---
     909036004, 909036005, 909036006, 909036008, 909036009, 909036010, 
     909036011, 909036012, 909036014, 909037001, 909037002, 909037003, 
     909037004, 909037005, 909037006, 909034013, 909034014, 909035001, 
     909035005, 909035006, 909035008, 909035009, 909035010, 909035011, 
     909035013, 909035014, 909035015, 909036001, 909036002, 909036003,
-
-    # --- Batch 4: Grandmaster & Rank ---
     909041005, 909041006, 909041007, 909041008, 909041009, 909041010, 
     909041011, 909041012, 909041013, 909041014, 909041015, 909042001, 
     909042002, 909042003, 909042004, 909039001, 909039002, 909039003, 
     909039004, 909039005, 909039006, 909039007, 909039008, 909039009, 
     909039010, 909039011, 909039012, 909039013, 909039014, 909040001,
-
-    # --- Batch 5: Party & Fun ---
     909037007, 909037008, 909037009, 909037010, 909037012, 909038001, 
     909038002, 909038003, 909038004, 909038005, 909038006, 909038008, 
     909038009, 909038011, 909038013, 909040002, 909040003, 909040004, 
     909040005, 909040006, 909040008, 909040009, 909040011, 909040012, 
     909040013, 909040014, 909041001, 909041002, 909041003, 909041004,
-
-    # --- Batch 6: Classic Old Gold ---
     909000041, 909000045, 909000046, 909000052, 909000055, 909000056, 
     909000057, 909000058, 909000060, 909000061, 909000062, 909000064, 
     909000065, 909000066, 909000067, 909000135, 909000136, 909000137, 
     909000138, 909000139, 909000140, 909000141, 909000142, 909000143, 
     909000144, 909000145, 909033004, 909033005, 909033006, 909033007,
-
-    # --- Batch 7: Flex & Interaction ---
     909000002, 909000003, 909000010, 909000014, 909000032, 909000034, 
     909000036, 909000038, 909000039, 909000091, 909000093, 909000094, 
     909000095, 909000096, 909000121, 909000122, 909000123, 909000124, 
@@ -101,9 +95,9 @@ async def start_loop(mode, uid, key, iv, region, whisper_writer, online_writer):
     if mode == 'evo':
         target_list = EVO_IDS
     elif mode == 'all':
-        target_list = ALL_IDS  # Sequential (Line by line)
+        target_list = ALL_IDS
     elif mode == 'mix':
-        target_list = FULL_MIX # Random Shuffle
+        target_list = FULL_MIX
         random.shuffle(target_list)
     else:
         target_list = ALL_IDS
@@ -124,16 +118,17 @@ async def start_loop(mode, uid, key, iv, region, whisper_writer, online_writer):
                 print(f"VIP Error: {e}")
                 await asyncio.sleep(0.5)
         
-        # Loop khatam hone ke baad wapas shuru
+        # Loop khatam hone ke baad agar mix mode hai to shuffle karo
         if mode == 'mix':
             random.shuffle(target_list)
 
 async def handle_vip_command(msg, uid, key, iv, region, whisper_writer, online_writer):
     global is_running, current_task
     
-    # 1. Security Check
-    if str(uid) != MY_BOSS_UID:
-        return "❌ Access Denied! Sirf Owner use kar sakta hai."
+    # --- 1. SECURITY CHECK (5 UIDs Support) ---
+    # Check karega ki msg bhejne wale ki UID list me hai ya nahi
+    if str(uid) not in VIP_ADMINS:
+        return "❌ Access Denied! Sirf VIP Admins use kar sakte hain."
 
     # 2. Stop Command
     if msg == '/stop':
