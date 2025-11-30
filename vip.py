@@ -4,11 +4,64 @@ import random
 
 # --- SETTINGS (Apni Squad ki UIDs yahan rakhein) ---
 VIP_ADMINS = [
+    # --- PURANE ADMINS (Ye nahi hatenge) ---
     "11553486931",
     "2572691913",
     "2522821351",
     "9316257817",
-    "6477391965"
+    "6477391965",
+    
+    # --- NAYE 50 SLOTS (Yahan paste karein) ---
+    "13984459203",
+    "UID_2_YAHAN_DALO",
+    "UID_3_YAHAN_DALO",
+    "UID_4_YAHAN_DALO",
+    "UID_5_YAHAN_DALO",
+    "UID_6_YAHAN_DALO",
+    "UID_7_YAHAN_DALO",
+    "UID_8_YAHAN_DALO",
+    "UID_9_YAHAN_DALO",
+    "UID_10_YAHAN_DALO",
+    "UID_11_YAHAN_DALO",
+    "UID_12_YAHAN_DALO",
+    "UID_13_YAHAN_DALO",
+    "UID_14_YAHAN_DALO",
+    "UID_15_YAHAN_DALO",
+    "UID_16_YAHAN_DALO",
+    "UID_17_YAHAN_DALO",
+    "UID_18_YAHAN_DALO",
+    "UID_19_YAHAN_DALO",
+    "UID_20_YAHAN_DALO",
+    "UID_21_YAHAN_DALO",
+    "UID_22_YAHAN_DALO",
+    "UID_23_YAHAN_DALO",
+    "UID_24_YAHAN_DALO",
+    "UID_25_YAHAN_DALO",
+    "UID_26_YAHAN_DALO",
+    "UID_27_YAHAN_DALO",
+    "UID_28_YAHAN_DALO",
+    "UID_29_YAHAN_DALO",
+    "UID_30_YAHAN_DALO",
+    "UID_31_YAHAN_DALO",
+    "UID_32_YAHAN_DALO",
+    "UID_33_YAHAN_DALO",
+    "UID_34_YAHAN_DALO",
+    "UID_35_YAHAN_DALO",
+    "UID_36_YAHAN_DALO",
+    "UID_37_YAHAN_DALO",
+    "UID_38_YAHAN_DALO",
+    "UID_39_YAHAN_DALO",
+    "UID_40_YAHAN_DALO",
+    "UID_41_YAHAN_DALO",
+    "UID_42_YAHAN_DALO",
+    "UID_43_YAHAN_DALO",
+    "UID_44_YAHAN_DALO",
+    "UID_45_YAHAN_DALO",
+    "UID_46_YAHAN_DALO",
+    "UID_47_YAHAN_DALO",
+    "UID_48_YAHAN_DALO",
+    "UID_49_YAHAN_DALO",
+    "UID_50_YAHAN_DALO"
 ]
 
 DELAY = 5.15  # Speed control
@@ -384,6 +437,10 @@ async def start_loop(mode, key, iv, region, whisper_writer, online_writer):
                 packets = []
                 for admin_uid in VIP_ADMINS:
                     # Har admin ke liye packet banao
+                    # Agar UID placeholder hai to skip karo, error se bachne ke liye
+                    if "YAHAN_DALO" in str(admin_uid): 
+                        continue
+                        
                     pkt = await Emote_k(int(admin_uid), int(emote_id), key, iv, region)
                     packets.append(pkt)
 
@@ -407,6 +464,7 @@ async def handle_vip_command(msg, uid, key, iv, region, whisper_writer, online_w
     global is_running, current_task
     
     # 1. SECURITY CHECK (UID verification)
+    # Check if uid is in list (String match)
     if str(uid) not in VIP_ADMINS:
         return "❌ Access Denied! Sirf VIP Admins use kar sakte hain."
 
@@ -448,4 +506,4 @@ async def handle_vip_command(msg, uid, key, iv, region, whisper_writer, online_w
         return f"✅ Started {mode_text} Mode!\nTotal Emotes: {count}\nTargets: All VIP Admins"
     
     return None
-    
+                    
