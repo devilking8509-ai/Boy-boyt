@@ -1045,38 +1045,29 @@ def get_player_info(player_id):
         return {
             "error": f"Failed to fetch data: {response.status_code}"
         }
-## CHAT WITH AI (Gemini 1.5 Pro - 100% Secure for GitHub)
+## CHAT WITH AI (Gemini 1.5 Flash - Fast & Stable)
 def talk_with_ai(question):
-    # Ab ye line sirf Server (Render) ke environment se key dhoondegi.
-    # Is code file ke andar koi key nahi hai, isliye GitHub par ye safe hai.
+    # Render Environment se key uthayega
     api_key = os.environ.get("GEMINI_API_KEY")
     
-    # Agar Render par key set karna bhool gaye, to ye error aayega
     if not api_key:
-        return "System Error: API Key not found. Please set GEMINI_API_KEY in Render Environment Variables."
+        return "System Error: API Key not found. Please set GEMINI_API_KEY in Render."
 
-    # Google Gemini 1.5 Pro Model URL
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+    # Maine yahan model change karke 'gemini-1.5-flash' kar diya hai
+    # Ye model 404 error nahi dega
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     headers = {
         'Content-Type': 'application/json'
     }
     
-    # Advanced settings for better AI responses
     payload = {
         "contents": [{
             "parts": [{"text": question}]
-        }],
-        "generationConfig": {
-            "temperature": 0.9,
-            "topK": 40,
-            "topP": 0.95,
-            "maxOutputTokens": 1024,
-        }
+        }]
     }
     
     try:
-        # Request bhej rahay hain
         res = requests.post(url, headers=headers, json=payload)
         
         if res.status_code == 200:
@@ -1085,9 +1076,10 @@ def talk_with_ai(question):
                 msg = data["candidates"][0]["content"]["parts"][0]["text"]
                 return msg
             else:
-                return "AI response khali aaya."
+                return "AI response empty."
         else:
-            return f"Server Error: {res.status_code}"
+            # Agar ab bhi error aaye to ye hame batayega kyun
+            return f"Server Error: {res.status_code} - {res.text}"
             
     except Exception as e:
         return f"Connection Error: {str(e)}"
